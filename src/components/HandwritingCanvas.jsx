@@ -96,9 +96,10 @@ const HandwritingCanvas = () => {
       });
       
       const data = await response.json();
+      console.log(data);
       setResult(data.error 
         ? `오류: ${data.error}`
-        : `예측 클래스: ${data.class}\n신뢰도: ${data.confidence.toFixed(3)}`);
+        : `예측 클래스: ${data.character}\n신뢰도: ${data.confidence.toFixed(3)}`);
     } catch (err) {
       setResult(`서버 오류: ${err.message}`);
     }

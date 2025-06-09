@@ -115,7 +115,7 @@ const SentenceCanvas = () => {
       console.log(data);
       setResult(data.error 
         ? `오류: ${data.error}`
-        : `인식된 문장: ${data.text}`);
+        : `인식된 문장: ${data.sentence}`);
     } catch (err) {
       setResult(`서버 오류: ${err.message}`);
     }

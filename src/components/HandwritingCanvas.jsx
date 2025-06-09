@@ -21,19 +21,29 @@ const HandwritingCanvas = () => {
     let lastX = 0;
     let lastY = 0;
 
-    const startDrawing = (e) => {
-      isDrawing = true;
+    const getCoordinates = (e) => {
       const rect = canvas.getBoundingClientRect();
-      lastX = e.clientX - rect.left;
-      lastY = e.clientY - rect.top;
+      const x = (e.clientX || e.touches[0].clientX) - rect.left;
+      const y = (e.clientY || e.touches[0].clientY) - rect.top;
+      return { x, y };
+    };
+
+    const startDrawing = (e) => {
+      e.preventDefault(); // 터치 이벤트의 기본 동작 방지
+      isDrawing = true;
+      const { x, y } = getCoordinates(e);
+      lastX = x;
+      lastY = y;
+      
+      ctx.beginPath();
+      ctx.moveTo(x, y);
     };
 
     const draw = (e) => {
+      e.preventDefault(); // 터치 이벤트의 기본 동작 방지
       if (!isDrawing) return;
       
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const { x, y } = getCoordinates(e);
 
       ctx.beginPath();
       ctx.moveTo(lastX, lastY);
@@ -44,20 +54,35 @@ const HandwritingCanvas = () => {
       lastY = y;
     };
 
-    const stopDrawing = () => {
+    const stopDrawing = (e) => {
+      e.preventDefault(); // 터치 이벤트의 기본 동작 방지
       isDrawing = false;
     };
 
+    // 마우스 이벤트
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
     canvas.addEventListener('mouseout', stopDrawing);
 
+    // 터치 이벤트
+    canvas.addEventListener('touchstart', startDrawing, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
+    canvas.addEventListener('touchend', stopDrawing, { passive: false });
+    canvas.addEventListener('touchcancel', stopDrawing, { passive: false });
+
     return () => {
+      // 마우스 이벤트 제거
       canvas.removeEventListener('mousedown', startDrawing);
       canvas.removeEventListener('mousemove', draw);
       canvas.removeEventListener('mouseup', stopDrawing);
       canvas.removeEventListener('mouseout', stopDrawing);
+
+      // 터치 이벤트 제거
+      canvas.removeEventListener('touchstart', startDrawing);
+      canvas.removeEventListener('touchmove', draw);
+      canvas.removeEventListener('touchend', stopDrawing);
+      canvas.removeEventListener('touchcancel', stopDrawing);
     };
   }, []);
 

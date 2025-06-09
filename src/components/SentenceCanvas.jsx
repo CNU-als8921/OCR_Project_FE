@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import './SentenceCanvas.css';
 
+const SERVER_URL = 'http://192.168.1.242:8000';
+
 const SentenceCanvas = () => {
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -104,7 +106,7 @@ const SentenceCanvas = () => {
       formData.append('file', blob, 'sentence.png');
 
       // 서버로 전송
-      const response = await fetch('http://localhost:8000/predict-sentence', {
+      const response = await fetch(`${SERVER_URL}/predict-sentence`, {
         method: 'POST',
         body: formData
       });

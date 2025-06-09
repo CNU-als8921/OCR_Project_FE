@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import './HandwritingCanvas.css';
 
+const SERVER_URL = 'http://192.168.1.242:8000';
+
 const HandwritingCanvas = () => {
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -115,7 +117,7 @@ const HandwritingCanvas = () => {
       formData.append('file', blob, 'drawn.png');
 
       // 서버로 전송
-      const response = await fetch('http://localhost:8000/predict', {
+      const response = await fetch(`${SERVER_URL}/predict`, {
         method: 'POST',
         body: formData
       });

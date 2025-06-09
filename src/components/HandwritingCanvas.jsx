@@ -15,7 +15,7 @@ const HandwritingCanvas = () => {
     // 초기 캔버스 설정
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.lineWidth = 20;
+    ctx.lineWidth = 5;
     ctx.lineCap = 'round';
     ctx.strokeStyle = '#000';
 
@@ -116,18 +116,21 @@ const HandwritingCanvas = () => {
       const formData = new FormData();
       formData.append('file', blob, 'drawn.png');
 
+      console.log('이미지 전송 시도...');
       // 서버로 전송
       const response = await fetch(`${SERVER_URL}/predict`, {
         method: 'POST',
         body: formData
       });
       
+      console.log('서버 응답:', response);
       const data = await response.json();
-      console.log(data);
+      console.log('서버 데이터:', data);
       setResult(data.error 
         ? `오류: ${data.error}`
         : `예측 클래스: ${data.character}\n신뢰도: ${data.confidence.toFixed(3)}`);
     } catch (err) {
+      console.error('전송 오류:', err);
       setResult(`서버 오류: ${err.message}`);
     }
   };

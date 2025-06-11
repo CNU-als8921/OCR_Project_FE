@@ -15,7 +15,7 @@ const SentenceCanvas = () => {
     // 초기 캔버스 설정
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.lineWidth = 6; // 문장 쓰기에 맞게 선 두께 조정
+    ctx.lineWidth = 10; // 문장 쓰기에 맞게 선 두께 조정
     ctx.lineCap = 'round';
     ctx.strokeStyle = '#000';
 

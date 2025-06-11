@@ -15,7 +15,7 @@ const HandwritingCanvas = () => {
     // 초기 캔버스 설정
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.lineWidth = 15;
+    ctx.lineWidth = 10;
     ctx.lineCap = 'round';
     ctx.strokeStyle = '#000';
 

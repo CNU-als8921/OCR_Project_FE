@@ -19,6 +19,13 @@ const HandwritingCollector = () => {
         return acc;
     }, {});
 
+    // characters 배열을 3줄로 나눔
+    const charRows = [
+        characters.slice(0, 10),
+        characters.slice(10, 23),
+        characters.slice(23, 36),
+    ];
+
     useEffect(() => {
         // 모든 캔버스 초기화
         canvasRefs.current.forEach((canvasRef) => {
@@ -152,19 +159,21 @@ const HandwritingCollector = () => {
 
             <div className="char-selector">
                 <h3>문자 선택</h3>
-                <div className="char-grid">
-                    {characters.map((char) => (
-                        <button
-                            key={char}
-                            className={`char-button ${
-                                selectedChar === char ? "selected" : ""
-                            }`}
-                            onClick={() => setSelectedChar(char)}
-                        >
-                            {char}
-                        </button>
-                    ))}
-                </div>
+                {charRows.map((row, rowIdx) => (
+                    <div className="char-grid" key={rowIdx}>
+                        {row.map((char) => (
+                            <button
+                                key={char}
+                                className={`char-button ${
+                                    selectedChar === char ? "selected" : ""
+                                }`}
+                                onClick={() => setSelectedChar(char)}
+                            >
+                                {char}
+                            </button>
+                        ))}
+                    </div>
+                ))}
             </div>
 
             <div className="canvas-grid">

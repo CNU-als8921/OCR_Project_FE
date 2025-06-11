@@ -19,10 +19,11 @@
 
 .char-selector {
     width: 100%;
-    margin-bottom: 40px;
+    max-width: 800px;
+    margin: 0 auto 40px auto;
     background-color: #f9fafb;
     border-radius: 16px;
-    padding: 24px;
+    padding: 20px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -34,8 +35,8 @@
 }
 
 .char-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+    display: flex;
+    justify-content: center;
     gap: 12px;
     padding: 8px;
 }

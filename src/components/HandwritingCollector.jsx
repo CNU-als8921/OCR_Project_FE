@@ -52,8 +52,11 @@ const HandwritingCollector = () => {
         const canvas = canvasRefs.current[index].current;
         const ctx = canvas.getContext("2d");
         const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        
+        // 터치 이벤트와 마우스 이벤트 모두 처리
+        const x = (e.clientX || e.touches[0].clientX) - rect.left;
+        const y = (e.clientY || e.touches[0].clientY) - rect.top;
+        
         ctx.beginPath();
         ctx.moveTo(x, y);
     };
@@ -63,13 +66,19 @@ const HandwritingCollector = () => {
         const canvas = canvasRefs.current[currentCanvas].current;
         const ctx = canvas.getContext("2d");
         const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        
+        // 터치 이벤트와 마우스 이벤트 모두 처리
+        const x = (e.clientX || e.touches[0].clientX) - rect.left;
+        const y = (e.clientY || e.touches[0].clientY) - rect.top;
+        
         ctx.lineTo(x, y);
         ctx.stroke();
     };
 
-    const stopDrawing = () => {
+    const stopDrawing = (e) => {
+        if (e) {
+            e.preventDefault(); // 터치 이벤트의 기본 동작 방지
+        }
         setIsDrawing(false);
         setCurrentCanvas(null);
     };
@@ -189,9 +198,20 @@ const HandwritingCollector = () => {
                                 onMouseMove={draw}
                                 onMouseUp={stopDrawing}
                                 onMouseOut={stopDrawing}
+                                onTouchStart={(e) => {
+                                    e.preventDefault();
+                                    startDrawing(e, index);
+                                }}
+                                onTouchMove={(e) => {
+                                    e.preventDefault();
+                                    draw(e);
+                                }}
+                                onTouchEnd={stopDrawing}
+                                onTouchCancel={stopDrawing}
                                 style={{
                                     border: "1px solid black",
                                     backgroundColor: "white",
+                                    touchAction: "none", // 터치 동작 최적화
                                 }}
                             />
                             <button

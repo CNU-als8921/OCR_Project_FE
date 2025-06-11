@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import "./HandwritingCollector.css";
 
+const SERVER_URL = 'http://192.168.1.242:8000';
+
 const HandwritingCollector = () => {
     const canvasRefs = useRef(
         Array(10)
@@ -30,7 +32,9 @@ const HandwritingCollector = () => {
                     canvasRef.current.height
                 );
                 ctx.strokeStyle = "black";
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 10;
+                ctx.lineCap = 'round';  // 선의 끝을 둥글게
+                ctx.lineJoin = 'round'; // 선이 만나는 지점을 둥글게
             }
         });
     }, [selectedChar]);
@@ -80,18 +84,32 @@ const HandwritingCollector = () => {
 
             for (let i = 0; i < canvasRefs.current.length; i++) {
                 const canvas = canvasRefs.current[i].current;
+                
+                // Check if canvas is empty
+                const ctx = canvas.getContext('2d');
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const hasContent = imageData.data.some(pixel => pixel !== 255); // Check if any pixel is not white
+                
+                if (!hasContent) continue; // Skip empty canvas
+
                 const resizedCanvas = document.createElement("canvas");
                 resizedCanvas.width = 28;
                 resizedCanvas.height = 28;
-                const ctx = resizedCanvas.getContext("2d");
+                const resizedCtx = resizedCanvas.getContext("2d");
 
-                ctx.drawImage(canvas, 0, 0, 28, 28);
+                resizedCtx.drawImage(canvas, 0, 0, 28, 28);
 
                 const blob = await new Promise((resolve) =>
                     resizedCanvas.toBlob(resolve, "image/png")
                 );
 
                 savedImages.push(blob);
+            }
+
+            // If no images to save, return early
+            if (savedImages.length === 0) {
+                console.log("No images to save");
+                return;
             }
 
             // FormData 생성 및 서버로 전송
@@ -104,7 +122,7 @@ const HandwritingCollector = () => {
                 );
             });
 
-            const response = await fetch("/api/save-handwriting", {
+            const response = await fetch(`${SERVER_URL}/api/save-handwriting`, {
                 method: "POST",
                 body: formData,
             });
